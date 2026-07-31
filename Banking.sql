@@ -100,6 +100,36 @@ references Branches(BranchID);
 
 desc accounts;
 
+ alter table transaction
+ add AccountID INT;
+ 
+ alter table transaction
+ add constraint fk_transaction_accounts
+ foreign key(AccountID)
+ references accounts(AccountID);
+ 
+ desc transaction;
+ 
+ alter table loans
+ add constraint pk_loanloans
+ primary key(loanID);
+ 
+ alter table loans
+ add  CustomerID INT;
+ 
+ alter table loans
+ add constraint fk_loan_Customer
+ foreign key(CustomerID)
+ references customers(CustomerID);
+ 
+ desc loans;
+ 
+--  select
+-- 	 constraint_name,
+--      constraint_type
+--      from information_schema.table_constraints
+--      where table_schema = 'bankingdb'
+--      and table_name = 'accounts';
 
  
 
