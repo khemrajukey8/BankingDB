@@ -131,11 +131,37 @@ desc accounts;
 --      where table_schema = 'bankingdb'
 --      and table_name = 'accounts';
 
+select * from customers;
+
+insert into customers (CustomerID , FirstName  ,LastName , Email , Phone , AccountCreationDate)
+values (101, 'Rose' , 'Ukey' , 'khemrajukey7@gmail.com', '9552122251', '2003-04-15');
+select* from customers;
+
+update customers
+set DateOfBIrth ='2003-10-05'
+where customerID = '101';
+
+update customers
+set FirstName ='Khemraj'
+where customerID = '101';
+
+select*from customers;
+
+insert into accounts
+(AccountID ,customerID, AccountType, Balance)
+ values (201,101,'saving',25000);
+ select * from accounts;
+ 
+ insert into customers 
+values (102, 'Raj' , 'Raut' , 'khemrajukey8@gmail.com', '9552122251', '2003-04-15','1998-05-18');
+
+insert into customers 
+values (103, 'Nadira' , 'Ukey' , 'nadiraukey20@gmail.com', '9373248950', '2001-10-20','1998-10-20'),
+(104, 'Komal' , 'Tekam' , 'komaltakem@gmail.com', '8408819296', '2015-04-15','2003-03-14');
+select*from customers;
+
+
+
  
 
 
- 
- 
- 
- 
- 
