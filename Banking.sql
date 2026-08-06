@@ -262,13 +262,91 @@ values (4, 'sadar Branch', 'Medical Square ' , 8408819296);
  select * from accounts
  where Balance >=30000 && AccountType = 'Saving' ; 
  
+ update customers
+ set AccountCreationDate = '2025-06-29'
+ where CustomerID = '101';
  
+ update customers
+ set AccountCreationDate = '2025-08-17'
+ where CustomerID = '102';
+ 
+ update customers
+ set AccountCreationDate = '2025-07-20'
+ where CustomerID = '104';
+ 
+ update customers
+ set AccountCreationDate = '2025-09-15'
+ where CustomerID = '103';
+ 
+ update customers
+ set phone = '9356854045'
+ where CustomerID = '101';
+ 
+ select * from customers
+ where AccountCreationDate > '2025-7-1';
+ 
+ select FirstName, LastName, Phone
+ from customers
+ where  phone IN ('9552122251','9373248950');
+ 
+ select FirstName, LastName, Phone
+ from customers
+ where  phone ='9552122251'or phone='9373248950'or phone='9356854045';
+ 
+ -- SELECT *
+-- FROM customers
+-- WHERE Phone = '9356854045';
+
+-- SELECT FirstName, LastName, Phone
+-- FROM customers
+-- WHERE TRIM(Phone) IN ('9552122251', '9373248950', '9356854045');
+-- BETWEEN  OPERATOR
+
+ select AccountID,Balance from accounts
+ where Balance between 20000 and 30000;
+ 
+  -- LIKE OPERATOR
+   -- % match any number of zero , even 
+SELECT *FROM customers
+WHERE FirstName LIKE 'K%';
+
+SELECT *FROM customers
+WHERE LastName LIKE '%Y';
+
+-- "_" match exactly one character. 
+
+select * from customers
+where  LastName like '____';
+
+-- SORTING DATA
+ 
+SELECT * FROM accounts
+ORDER BY Balance asc; 
+
+select BranchID, BranchName from branches
+order by BranchName ;
+
+-- the accounts table according to customers balance from highest to lowest  
+select * from accounts
+order by Balance desc;
+
+-- USING TWO COLUMN sorting 
+select * from accounts
+order by AccountType desc , Balance desc;
+
+select distinct AccountType from accounts;
+-- select accounttype from accounts
+-- where AccountType ='saving';
+
+select distinct TrasactionType, AccountID FROM transaction;
+
+
 
 SELECT * FROM branches;
 select * from accounts;
 select * from loans;
 select * from customers;
-select * from transaction;
+select * from transaction; 
 
 
 
