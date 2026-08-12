@@ -453,14 +453,6 @@ case
     end as "TransactionCategory"
     from transaction;
     
-    
-
-SELECT * FROM branches;
-select * from accounts;
-select * from loans;
-select * from customers;
-select * from transaction;  
-
 select CustomerID,length(firstname ) ,upper(lastname) from customers;
 select CustomerID,lower(firstname ) ,lower(lastname) from customers;
 select CustomerID,char_length(lastname)  from customers;
@@ -471,14 +463,105 @@ select length("नागपूर" );-- gives o/p in number of bytes
 select CustomerID , concat(firstname ,' ', lastname) as FullName from customers;
 -- substring function 
 select substring(FirstName,1,5) from customers;
+select FirstName, substring(FirstName,-2,-1) from customers;
 
 select  CustomerID,CONCAT(SUBSTRING(FirstName, 1, 1), '. ', LastName) AS Full_Name 
 from customers;
-
- -- trim function
+ -- Trim Function 
+ select length("  Hello World  ");
+ select length(trim("  Hello World  "));
+ select length(trim(substring("Hello World",6)));
  
+ -- Replace Function  is a case- sensitive Original , From str , To Str i work left to right 
+ select replace("Mat mat Mat","M","C");
+SELECT REPLACE('SQL Server','Server','Database');
+
+-- Math Function     avg function
+select avg (balance)from accounts
+where AccountType ='saving' ;
+ 
+ -- ROUND FUNCTION  
+select round(avg(balance),2) from accounts
+where AccountType='saving';
+ 
+select round(balance)from accounts
+where AccountType ='saving' ; 
+
+-- CEIL FUNCTION 
+select ceil(avg(balance))from accounts
+where AccountType ='saving' ; 
+
+-- FLOOR FUNCTION 
+select floor(avg(balance))from accounts
+where AccountType ='current' ;
+
+select floor(amount)from transaction
+where TrasactionType='deposit' ; 
+
+select ceil(amount)from transaction
+where TrasactionType='deposit' ; 
+
+select avg(amount)from transaction
+where TrasactionType='deposit' ;  
+
+select  floor(avg(amount))from transaction
+where TrasactionType='deposit' ; 
+
+select  ceil(avg(amount)) as AverageDeposit from transaction
+where TrasactionType='deposit' ; 
+
+-- absolute function it remove the sign 
+select abs(-2541); 
+select abs(-41); 
+select abs(2.541); 
+
+-- MOD FUNCTION 
+SELECT MOD(10, 3);
+SELECT 10 % 3;
+select (7/3);
+
+-- POWER FUNCTION LIKE CUBE 
+SELECT POWER(2, 3);
+
+-- SQRT — Square root
+SELECT SQRT(25);
+
+-- Date and Time Fuction  
+-- Now() function 
+select now();
+SELECT CURDATE();
+SELECT curtime();
+SELECT DATE('2026-08-12 08:30:15'); -- extract date from datetime
+SELECT TIME('2026-08-12 08:30:15'); -- extract time from datetime
+SELECT YEAR('2026-08-12'); -- Get YEAR 
+
+SELECT MONTH('2026-08-12'); -- get month 
+SELECT DAY('2026-08-12'); --     get day
+
+select DateOfBirth,year(dateofbirth) as Year ,
+month(dateofbirth) as Month ,
+day(dateofbirth) as Day ,
+dayname(dateofbirth) as DayName,
+monthname(dateofbirth) as MonthName from customers; 
+SELECT dayname('2026-08-12'); -- get dayname
+SELECT MONTHNAME('2026-08-12'); -- get month name 
+
+SELECT 
+    FirstName,
+    DOB,
+    FLOOR(DATEDIFF(CURDATE(), DOB) / 365) AS Age
+FROM customers;
+
+--  fullname , dateofbirth , age 
+select concat(FirstName," ",LastName) as FullName , DateOfBirth ,floor(datediff(curdate(), (dateofbirth)) /365) as age from customers;
 
 
+
+SELECT * FROM branches;
+select * from accounts;
+select * from loans;
+select * from customers;
+select * from transaction;  
 
 
 -- Display the CustomerID, FirstName and Email of customers whose AccountCreationDate is after 1-Jan-2025.
