@@ -481,7 +481,7 @@ select avg (balance)from accounts
 where AccountType ='saving' ;
  
  -- ROUND FUNCTION  
-select round(avg(balance),2) from accounts
+select round(avg(balance),3) from accounts
 where AccountType='saving';
  
 select round(balance)from accounts
@@ -533,8 +533,8 @@ SELECT CURDATE();
 SELECT curtime();
 SELECT DATE('2026-08-12 08:30:15'); -- extract date from datetime
 SELECT TIME('2026-08-12 08:30:15'); -- extract time from datetime
-SELECT YEAR('2026-08-12'); -- Get YEAR 
 
+SELECT YEAR('2026-08-12'); -- Get YEAR 
 SELECT MONTH('2026-08-12'); -- get month 
 SELECT DAY('2026-08-12'); --     get day
 
@@ -555,6 +555,57 @@ FROM customers;
 --  fullname , dateofbirth , age 
 select concat(FirstName," ",LastName) as FullName , DateOfBirth ,floor(datediff(curdate(), (dateofbirth)) /365) as age from customers;
 
+-- dateADD function
+select  concat(FirstName," ",LastName) as FullName , accountcreationdate , date_add(accountcreationdate,interval 365 day) as KYCRenewal from customers;
+
+-- Count Function 
+select count(*)  as Total_Customer from customers;
+select count(Phone)  as Total_Customer from customers;
+
+-- SUM FUNCTION 
+select sum(Balance) as Total_Balance from accounts;
+select sum(balance) as SavingBalance
+from accounts
+where AccountType='saving' ; 
+
+-- Avg() Function
+select avg(amount) as AverageAmount from transaction;
+select avg(amount) as AverageDepositAmount from transaction
+where trasactiontype ='deposit' ;
+
+-- Max() Function
+select max(balance) as MaximumBalance from accounts
+where AccountType='saving';
+
+select min(balance) as MaximumBalance from accounts
+where AccountType='saving';
+
+SELECT 
+    AccountType, AVG(balance) AS AvgBalance
+FROM
+    accounts
+GROUP BY AccountType;
+
+SELECT 
+    trasactionType, SUM(amount) AS Total_Amount
+FROM
+    transaction
+GROUP BY TrasactionType;
+
+SELECT 
+    BranchID, AccountType,
+    COUNT(Balance) AS TotalAccount,
+    SUM(balance) TotalBalance,
+    round(AVG(balance),2) AS AvgBalance
+FROM
+    accounts
+GROUP BY BranchID,AccountType;
+
+SELECT 
+    BranchID, accounttype, COUNT(*)
+FROM
+    accounts
+GROUP BY BranchID , accounttype;
 
 
 SELECT * FROM branches;
@@ -744,6 +795,73 @@ where CustomerID not in (101,102,103);
 select * from customers
 where  email not like '%gmail.com';
 
+-- Display accounts whose balance is not between ₹20,000 and ₹50,000. 
+select * from accounts
+where Balance not between 20000 and 50000;
+
+-- Display all transactions except Deposit transactions.
+select * from transaction
+where TrasactionType <> 'deposit';  
+
+-- Display customers whose first name contains the letter 'a' but does not start with 'A' 
+SELECT *
+FROM Customers
+WHERE FirstName LIKE '%a%'
+  AND FirstName NOT LIKE 'A%';
+  
+  -- Display customers who have phone numbers available but were created before 2025. 
+ select * from customers
+ where phone is not null and AccountCreationDate < 2025;
+ 
+ -- Display first 3 Savings accounts after skipping the first 2 Savings accounts. 
+ select * from accounts
+ where AccountType ='saving'
+ -- order by AccountID 
+ limit 3 offset 2 ;
+ 
+ -- Tricky Level 2
+-- Display customers whose CustomerID is between 101 and 110 but not equal to 105 or 108
+select * from customers
+where CustomerID between 101 and 110 and CustomerID not in (105,108);
+
+-- Display transactions whose amount is greater than ₹2000 but not equal to ₹5000.
+select * from transaction
+where Amount > 2000 and Amount not in (5000); 
+
+-- Display customers whose last name starts with 'S' and email contains gmail but phone number is NULL. 
+ select * from customers
+ where LastName like 'B%' and Email like '%gmail%' and phone is null;
+ 
+ -- Display accounts having balance between ₹15,000 and ₹60,000 but not belonging to Branch 2.
+ select * from accounts
+ where Balance between 15000 and 60000 and branchid not in (2);
+  
+  -- Display accounts whose AccountType is Savings or Salary but balance is not between ₹10,000 and ₹40,000. 
+  select * from accounts
+  where AccountType ='saving' or AccountType ='salary ' and Balance not between 10000 and 40000;
+  
+  -- Display customers whose DateOfBirth is after 1995 but before 2000.
+  select * from customers
+  where year(DateOfBirth) > 1995 and year(DateOfBirth )<2000;
+  
+  -- Display customers whose email contains gmail but FirstName does not contain 'a'. 
+  select * from customers
+  where email like '%gmail%' and FirstName not like '%a%';
+  
+  -- Display only the next 5 customers after skipping the first 4 customers 
+  select * from customers
+  limit 4,5;
+  
+-- Tricky Level 3 (Logical Confusion)
+-- Display all Savings accounts having balance greater than ₹20,000 OR belonging to Branch 1.
+-- (Students often mistakenly use AND.)
+select * from accounts
+where AccountType ='saving' and( Balance > 20000 or BranchID = 1 );
+
+
+ 
+  
+ 
 
  
 
