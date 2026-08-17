@@ -605,8 +605,75 @@ SELECT
     BranchID, accounttype, COUNT(*)
 FROM
     accounts
-GROUP BY BranchID , accounttype;
+GROUP BY BranchID , accounttype
+order by BranchID;
 
+-- Having Clouse  
+
+SELECT 
+    BranchID, accounttype, COUNT(*) as NoOfAccounts
+FROM
+    accounts
+GROUP BY BranchID , accounttype
+having NoOfAccounts > 2 and AccountType='saving' ;
+
+update customers
+set AccountCreationDate ='2026-07-12'
+where CustomerID='105';
+
+update customers
+set AccountCreationDate ='2026-08-17'
+where CustomerID='107';
+
+update customers
+set AccountCreationDate ='2026-09-18'
+where CustomerID='109';
+
+-- Yearwise_Total_Number_Of_Account 
+select year(AccountCreationDate) as Years , count(*) as Total_Account
+from customers
+group by Years
+order by Years ;
+
+-- today learn join and type of join in sql   
+-- INNER JOIN  
+SELECT 
+    Customers.CustomerID,
+    Customers.FirstName,
+    Accounts.AccountType,
+    Accounts.Balance
+FROM Customers
+INNER JOIN Accounts
+    ON Customers.CustomerID = Accounts.CustomerID;
+-- find all customer having loan with their name , interest rate and loan amount     
+ 
+ select c.FirstName,c.LastName ,l.InterestRate , l.LoanAmount
+ from customers c
+ inner join loans l
+ on c.CustomerID=l.CustomerID;
+ 
+ select c.CustomerID ,concat( c.FirstName," ",c.LastName )as Full_Name ,l.InterestRate , l.LoanAmount
+ from customers c
+ inner join loans l
+ on c.CustomerID=l.CustomerID;
+ 
+ -- find the brwnch name for all the accountID 
+ -- include accountID, accounttype and branchname, branchaddress
+ select a.AccountID,a.AccountType ,b.BranchName,b.BranchAddress
+ from accounts a
+ inner join branches b
+ on a.branchid =b.branchid
+ where AccountType='saving';
+ 
+ -- find all the customers (name,phone ) where account typ , balancee is deposit 
+ select concat(c.firstname,c.lastname)as Full_Name ,c.Phone , a.Accounttype ,a. Balance
+ from customers c 
+ inner join accounts a 
+ on c.CustomerID=a.CustomerID
+ where AccountType='saving' and phone is not null;
+
+
+SHOW TABLES;
 
 SELECT * FROM branches;
 select * from accounts;
