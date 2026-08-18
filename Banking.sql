@@ -671,10 +671,77 @@ INNER JOIN Accounts
  inner join accounts a 
  on c.CustomerID=a.CustomerID
  where AccountType='saving' and phone is not null;
+ 
+ insert into customers(CustomerID,FirstName,LastName,Email,Phone,AccountcreationDate,DateOfBirth)
+ values (111,'Vikram','Joshi','vikram@gmail.com','6545857595',NULL,'2000-01-12'),
+ (112,'Anajli','Raut','anjalim@gmail.com','5465875952',NULL,'2003-05-12'),
+ (113,'Suresh','Pawar','suresh@gmail.com','36545854595',NULL,'2002-06-10');
+ 
+ insert into customers (CustomerID,FirstName,LastName,Email,Phone,AccountcreationDate,DateOfBirth)
+ values (114,'Raj','Ukeyi','raj1@gmail.com','1545654585','2026-07-12','2000-01-12');
+ 
+update customers
+set phone = '6585459575'
+where customerid ='113';
 
+-- LEFT JOIN 
+select c.FirstName,c.lastname,c.phone ,a.accounttype,a.balance
+     from customers c
+     left join accounts a
+     on c.CustomerID=a.CustomerID;
+   --   WHERE AccountType IS NOT NULL AND Balance IS NOT NULL;
+ 
+ select c.FirstName,c.lastname,c.phone ,a.accounttype,a.balance
+     from accounts a
+     left join customers c
+     on c.CustomerID=a.CustomerID;
+     
+     -- Right Join   
+     
+     select c.FirstName,c.lastname,c.phone ,a.accounttype,a.balance
+     from customers c
+     right join accounts a
+     on c.CustomerID=a.CustomerID;
+     
+     insert into branches
+     values(5,'Nashik Branch','College Road ,Nashik','6575849552');
+     
+     insert into accounts(accountid,accounttype,balance,customerid,branchid)
+     values(211,'saving',20000,111,4),
+     (212,'Cureent',35000,112,2);
+     
+-- update accounts
+--      set accountid = 1001
+--      where customerid =101;
+     
+ insert into transaction 
+ values (409,'2023-07-25',25000,'Withdrawal',204),
+ (410,'2026-07-25',2000,'Deposit',205),
+ (411,'2026-02-20',35000,'Withdrawal',204),
+ (412,'2025-07-25',50000,'Deposit',207),
+ (413,'2026-08-15',40000,'Withdrawal',206),
+ (414,'2026-08-25',60000,'Deposit',208),
+ (415,'2026-05-20',25000,'Withdrawal',205);
+ 
+ insert into accounts
+ values(213,'saving',20000,109,2);
+ 
+ insert into accounts
+ values(214,'saving',20000,107,2);
+ 
+ insert into accounts
+ values(215,'current',60000,101,1);
+ 
+ -- 
+ select c.CustomerID,concat(c.FirstName ," ", c.LastName) as FullName,a.AccountID,a.AccountType,a.Balance
+ from customers c
+ inner join accounts a
+ on c.CustomerID=a.CustomerID
+ ORDER BY c.CustomerID;
+ 
+  
 
 SHOW TABLES;
-
 SELECT * FROM branches;
 select * from accounts;
 select * from loans;
