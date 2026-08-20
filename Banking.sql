@@ -710,9 +710,9 @@ select c.FirstName,c.lastname,c.phone ,a.accounttype,a.balance
      values(211,'saving',20000,111,4),
      (212,'Cureent',35000,112,2);
      
--- update accounts
---      set accountid = 1001
---      where customerid =101;
+update accounts
+    set accounttype = 'Current'
+    where customerid =112;
      
  insert into transaction 
  values (409,'2023-07-25',25000,'Withdrawal',204),
@@ -739,16 +739,221 @@ select c.FirstName,c.lastname,c.phone ,a.accounttype,a.balance
  on c.CustomerID=a.CustomerID
  ORDER BY c.CustomerID;
  
-  
 
+
+--  1. Display customers who do not have a Current account.
+SELECT c.FirstName,c.LastName,a.Accounttype 
+FROM Customers c
+inner JOIN Accounts a
+ON c.customerid = a.customerid
+WHERE a.accounttype <> 'Current';
+
+-- 2. Display Customername,Accountcreation date,Accounttype,Balancefor customers whose account was created in 2025.
+select c.FirstName,c.LastName,c.AccountCreationDate,a.Accounttype,a.Balance 
+from customers c
+inner join accounts a
+on a.CustomerID=c.CustomerID
+where year(c.AccountCreationDate) = 2025; 
+
+-- 3. Display:Customername,Accountcreation date,Accounttype and calculate the number of days since account creation.
+select c.FirstName,c.LastName,c.AccountCreationDate,a.Accounttype,DATEDIFF(CURDATE(), c.AccountCreationDate) AS Number_Of_Day
+from customers c 
+inner join accounts a 
+on c.CustomerID=a.CustomerID;
+
+-- 4. Find the number of accounts held by each customer.
+select c.CustomerID,c.FirstName,c.LastName,count(a.accountid) 
+from customers c 
+left join accounts a 
+on a.customerid=c.CustomerID
+group by c.CustomerID,c.FirstName;
+
+-- 5. Find the total balance held by each customer.
+select c.CustomerID,concat(c.FirstName," ",c.LastName) as Full_Name,sum(a.balance) as Total_Balance
+from customers c 
+left join accounts a 
+on a.customerid=c.CustomerID
+group by c.CustomerID,Full_Name;
+
+-- 6. Find the number of customers for each account type.
+select a.accounttype,count(c.CustomerID)
+from customers c 
+left join accounts a 
+on a.CustomerID =c.CustomerID
+group by a.AccountType;
+
+-- 7. Find the total balance for each account type.
+select accounttype , sum(balance) as Total_Balance 
+from accounts
+group by AccountType;
+-- 8. Find the highest balance held by each account type.
+select AccountType,max(Balance) as Highest_Balance
+from accounts
+group by AccountType;
+
+-- 9. Find the number of customers for each branch.
+SELECT a.BranchID, COUNT( c.CustomerID) AS NumberOfCustomers
+FROM Customers c
+inner JOIN Accounts a
+ON c.CustomerID = a.CustomerID
+GROUP BY a.BranchID;
+
+-- 10. Find customers whose total account balance is greater than ₹40,000.
+SELECT c.CustomerID,c.FirstName,c.LastName,
+    SUM(a.Balance) AS TotalBalance
+FROM Customers c
+inner join Accounts a
+    ON c.CustomerID = a.CustomerID
+GROUP BY 
+    c.CustomerID,c.FirstName,c.LastName
+HAVING SUM(a.Balance) > 40000;
+-- 11. Find customers who have more than one account.
+select c.CustomerID ,c.FirstName,c.LastName ,count(a.AccountID)
+from customers c
+inner join  accounts a
+on c. customerid=a.CustomerID
+group by c.CustomerID ,c.FirstName,c.LastName 
+having count(a.AccountID) > 1;
+
+-- 12. Find customers who do not have an account.
+select c.CustomerID,c.FirstName,c.LastName
+from customers c
+left join accounts a
+on c.CustomerID=a.CustomerID
+where a.CustomerID is null ;
+
+-- 13. Find customers who do not have any loan.
+select c.CustomerID,c.FirstName,c.LastName
+from customers c
+left join loans l
+on c.CustomerID=l.CustomerID
+where l.CustomerID is null ;
+
+-- 14. Find customers who have never performed a transaction.
+select c.CustomerID,concat(c.FirstName," ",c.LastName ) as FullName , count(t.AccountID) as NoOfTransaction
+from customers c
+inner join accounts a
+on c.CustomerID=a.CustomerID
+left join transaction t
+on t.AccountID = a.AccountID
+group by (c.CustomerID)
+having NoOfTransaction = 0 ;
+
+
+-- 15. Display all branches and their account count, including
+-- branches that have zero accounts. 
+SELECT b.BranchID,b.BranchName,COUNT(a.AccountID) AS TotalAccount
+FROM Branches b
+LEFT JOIN Accounts a
+ON b.branchid = a.branchid
+GROUP BY b.BranchID
+having TotalAccount >2;
+
+-- 16 Display all savings accounts customers along with their branches 
+
+SELECT c.CustomerID,CONCAT(c.FirstName, ' ', c.LastName) AS FullName,a.Accounttype ,b.Branchname
+FROM Customers c
+left join  Accounts a
+    ON c.CustomerID = a.CustomerID
+inner join Branches b
+    ON a.BranchID = b.BranchID
+WHERE a.AccountType = 'Saving';
+
+-- Full Outer Join in SQL 
+
+select * from customers c 
+left join accounts a 
+on c.CustomerID =a.CustomerID
+union 
+select * from customers c 
+right join accounts a 
+on c.CustomerID =a.CustomerID;
+
+-- SELF JOIN AND CREATE TABLE  
+
+CREATE TABLE Employees( EmployeeID INT PRIMARY KEY,
+EmployeeName varchar (50) NOT NULL,
+ManagerID int ,
+Department varchar(50),
+Salary DECIMAL(10,2),
+JoiningDate DATE,
+BranchID INT ,
+
+foreign key (ManagerID)
+references Employees(EmployeeID),
+
+foreign key (BranchID)
+references Branches(BranchID)
+);
+SELECT * FROM Employees;
+alter table Employees
+rename column salary to Salary ;
+
+INSERT INTO Employees
+    (EmployeeID, EmployeeName, ManagerID, Department, Salary, JoiningDate, BranchID)
+VALUES
+    (1, 'Rajesh Sharma', NULL, 'Management', 120000.00, '2018-04-15', 1),
+    (2, 'Priya Patel', 1, 'Human Resources', 75000.00, '2019-06-10', 2),
+    (3, 'Amit Kumar', 1, 'Finance', 82000.00, '2020-01-20', 3),
+    (4, 'Sneha Verma', 1, 'IT', 95000.00, '2019-09-05', 4),
+    (5, 'Rahul Singh', 1, 'Sales', 78000.00, '2021-03-12', 5),
+    (6, 'Neha Joshi', 2, 'Human Resources', 55000.00, '2021-07-19', 1),
+    (7, 'Vikas Gupta', 2, 'Human Resources', 52000.00, '2022-02-14', 2),
+    (8, 'Pooja Mehta', 3, 'Finance', 60000.00, '2021-11-08', 3),
+    (9, 'Suresh Yadav', 3, 'Finance', 58000.00, '2022-05-16', 4),
+    (10, 'Anjali Deshmukh', 4, 'IT', 72000.00, '2020-08-24', 5),
+    (11, 'Rohan Kulkarni', 4, 'IT', 68000.00, '2021-10-11', 1),
+    (12, 'Kavita Rao', 4, 'IT', 65000.00, '2022-01-17', 2),
+    (13, 'Arjun Malhotra', 5, 'Sales', 57000.00, '2022-06-20', 3),
+    (14, 'Meena Shah', 5, 'Sales', 59000.00, '2021-12-06', 4),
+    (15, 'Deepak Thakur', 5, 'Sales', 54000.00, '2023-01-09', 5),
+    (16, 'Nitin Pawar', 6, 'Human Resources', 42000.00, '2023-04-18', 1),
+    (17, 'Swati Mishra', 7, 'Human Resources', 40000.00, '2023-07-03', 2),
+    (18, 'Manish Jain', 8, 'Finance', 45000.00, '2023-02-27', 3),
+    (19, 'Komal Sinha', 9, 'Finance', 43000.00, '2023-08-14', 4),
+    (20, 'Akash Bansal', 10, 'IT', 50000.00, '2023-05-22', 5);
+SELECT 
+    e.EmployeeID,
+    e.employeename AS Employee,
+    m.employeename AS Manager,b.BranchID
+FROM
+    employees e
+LEFT JOIN
+    employees m 
+ON e.ManagerID = m.employeeid;
+
+--      
+SELECT 
+    e.EmployeeID,
+    e.employeename AS Employee,
+    m.employeename AS Manager,b.BranchID,b.BranchName
+FROM
+    employees e
+LEFT JOIN
+    employees m 
+ON e.ManagerID = m.employeeid
+inner join branches b 
+on b.BranchID=e.BranchID
+order by EmployeeID asc;
+
+-- display to report sneha verma 
+-- find the all the employee who report to shena verma 
+select e.EmployeeID,e.Department,e.EmployeeName as EmployeeName   
+from employees e
+left join employees m
+on e.ManagerID =m.EmployeeID
+where e.ManagerID = 4;
+
+    
+select * from employees;   
+show databases;    
 SHOW TABLES;
 SELECT * FROM branches;
 select * from accounts;
 select * from loans;
 select * from customers;
 select * from transaction;  
-
-
+ 
 -- Display the CustomerID, FirstName and Email of customers whose AccountCreationDate is after 1-Jan-2025.
 select customerID , FirstName , Email from customers
 where AccountCreationDate > 2025-01-01;
