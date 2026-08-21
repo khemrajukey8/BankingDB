@@ -875,7 +875,7 @@ CREATE TABLE Employees( EmployeeID INT PRIMARY KEY,
 EmployeeName varchar (50) NOT NULL,
 ManagerID int ,
 Department varchar(50),
-Salary DECIMAL(10,2),
+salary DECIMAL(10,2),
 JoiningDate DATE,
 BranchID INT ,
 
@@ -915,14 +915,13 @@ VALUES
 SELECT 
     e.EmployeeID,
     e.employeename AS Employee,
-    m.employeename AS Manager,b.BranchID
+    m.employeename AS Manager,e.BranchID
 FROM
     employees e
 LEFT JOIN
     employees m 
 ON e.ManagerID = m.employeeid;
-
---      
+     
 SELECT 
     e.EmployeeID,
     e.employeename AS Employee,
@@ -944,7 +943,63 @@ left join employees m
 on e.ManagerID =m.EmployeeID
 where e.ManagerID = 4;
 
-    
+
+-- Find all customers having balance more than average balance  in saving account
+
+select avg(Balance) as AverageBalance from accounts
+where AccountType ='saving' ;
+
+select  concat(c.firstname," ",c.lastname) as FullName   ,avg(a.balance) as Average,a.AccountType
+from customers c 
+left join accounts a 
+on c.CustomerID=a.CustomerID
+where a.AccountType = 'saving'
+group by FullName 
+having Average > 18375;
+
+-- SUBQUERIS
+-- SCALAR SUBQUERIS  
+select concat(c.firstname," ",c.lastname) as FullName   ,avg(a.balance) as Average,a.AccountType
+from customers c 
+left join accounts a 
+on c.CustomerID=a.CustomerID
+where a.AccountType = 'saving' 
+group by FullName
+having avg(a.Balance) > ( select avg(Balance)  from accounts
+where AccountType ='saving' );
+
+select AccountID , CustomerID from accounts
+where  Balance >
+ ( select avg(Balance)  from accounts );
+ 
+ select AccountID , CustomerID from accounts
+ where AccountType = 'saving' and balance > (select avg(balance) from accounts
+ where AccountType='saving') ;
+ 
+ select c.FirstName, a.AccountID ,c.CustomerID from customers c
+ inner join accounts a 
+ on a.CustomerID = c.CustomerID
+where  accounttype ='saving' and  a.Balance >
+ ( select avg(Balance)  from accounts
+  where accounttype ='saving');
+  
+  -- find the account having highest balance  
+SELECT AccountID,customerid,balance
+FROM Accounts
+WHERE Balance = (
+    SELECT MAX(Balance)
+    FROM Accounts
+);
+
+-- find the customers whose year of birth is earlier than average year of birth pf all customers
+SELECT FirstName,LastName,YEAR(DateOfBirth) AS BirthYear,dateofbirth
+FROM Customers
+WHERE ( year(DateOfBirth)) < (
+    SELECT floor(AVG(YEAR(DateOfBirth)))
+    FROM Customers
+);
+
+  
 select * from employees;   
 show databases;    
 SHOW TABLES;
